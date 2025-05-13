@@ -31,6 +31,15 @@ export default function ExportData() {
     )
   );
 
+  const totalQty= filteredData.reduce((sum,row)=>{
+     const qty = parseFloat(row['QTY. (in Qtl)']) || 0;
+     return sum + qty;
+  },0)
+
+  const totalBags = filteredData.reduce((sum, row) => {
+  const bags = parseFloat(row['No. of Bags']) || 0;
+  return sum + bags;
+}, 0);
   // Step 2: Build dynamic options based on currently filtered data
   const getOptionsForColumn = (column) => {
     const scopedData = originalData.filter(row =>
@@ -55,9 +64,15 @@ export default function ExportData() {
       <div className="px-6 py-4">
         <h2 className="text-2xl font-semibold mb-4">Export Data</h2>
 
+        {/* Totals Display */}
+<div className="mb-4 p-4 bg-white rounded shadow-sm flex flex-col sm:flex-row sm:items-center gap-4 text-sm font-medium">
+  <div>Total Quantity (in Qtl): <span className="text-blue-600">{totalQty}</span></div>
+  <div>Total No. of Bags: <span className="text-green-600">{totalBags}</span></div>
+</div>
+
         {/* Cascading Filters */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
-        {headers.filter(header => header !== 'Sno').map((header) => {
+        {headers.filter(header => header !== 'Sno' && header !== 'Lot No' && header !== 'QTY. (in Qtl)' && header !== 'Final Wt (Y / N)').map((header) => {
             const options = getOptionsForColumn(header);
             return (
               <div key={header}>

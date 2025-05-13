@@ -9,10 +9,14 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28'
 const getGroupedData = (data, key) => {
   const map = new Map();
   data.forEach(item => {
-    const value = item[key] || 'Unknown';
-    map.set(value, (map.get(value) || 0) + 1);
+    const category = item[key] || 'Unknown';
+    const qty = parseFloat(item['QTY. (in Qtl)']) || 0;
+    map.set(category, (map.get(category) || 0) + qty);
   });
-  return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
+  return Array.from(map.entries()).map(([name, value]) => ({
+    name,
+    value: parseFloat(value.toFixed(2)), // optional: limit to 2 decimal places
+  }));
 };
 
 export default function PieChartData() {
@@ -54,12 +58,12 @@ export default function PieChartData() {
       <div className="px-20 mb-20">
         <h1 className="text-3xl font-bold mb-4 text-blue-700">Dashboard</h1>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-20'>
+        <div className='grid grid-cols-1 md:grid-cols-1 gap-20'>
         {/* Rice Variant Pie Chart */}
         <div className=''>
           <h2 className="text-xl font-semibold mb-2 text-red-500">Rice Variant Distribution</h2>
           <div className='w-40 h-40 absolute top-40 left-20 bg-blue-100 blur-3xl'></div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie data={riceVariantData} dataKey="value" nameKey="name" outerRadius={100} label>
                 {riceVariantData.map((entry, index) => (
